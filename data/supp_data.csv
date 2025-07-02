@@ -1,0 +1,117 @@
+﻿N ,Site ,Year ,Irrigation program ,Sowing date ,Harvest date ,GDD-60 ,PP + IRR (mm) ,Site-year yield average  
+1 ,Appling  ,2020 ,Irrigated  ,6/1 ,10/28 ,2603 ,588 ,1316 
+2 ,Atkinson  ,2020 ,Dryland  ,5/22 ,12/29 ,3113 ,844 ,1069 
+3 ,Ben Hill  ,2020 ,Dryland  ,6/4 ,11/16 ,2625 ,538 ,1231 
+4 ,Berrien  ,2020 ,Dryland  ,5/14 ,10/20 ,2689 ,609 ,953 
+5 ,Brooks  ,2020 ,Dryland  ,5/5 ,11/9 ,3065 ,983 ,1269 
+6 ,Bulloch  ,2020 ,Dryland ,6/1 ,1/19 ,2773 ,612 ,1219 
+7 ,Burke  ,2020 ,Dryland  ,5/15 ,10/22 ,2547 ,554 ,1315 
+8 ,Burke  ,2020 ,Irrigated  ,5/21 ,10/27 ,- ,- ,1419 
+9 ,Coffee  ,2020 ,Irrigated  ,5/28 ,11/18 ,2783 ,565 ,1162 
+10 ,Colquitt  ,2020 ,Dryland  ,5/12 ,12/3 ,2921 ,892 ,717 
+11 ,Colquitt  ,2020 ,Irrigated  ,5/16 ,11/6 ,- ,- ,1460 
+12 ,Cook ,2020 ,Dryland ,4/29 ,10/19 ,2854 ,666 ,822 
+13 ,Cook  ,2020 ,Irrigated  ,4/29 ,10/19 ,- ,- ,1329 
+14 ,Early  ,2020 ,Irrigated  ,6/2 ,12/22 ,2782 ,771 ,1092 
+15 ,Grady  ,2020 ,Dryland  ,5/22 ,12/5 ,2978 ,935 ,1064 
+16 ,Jeff Davis  ,2020 ,Irrigated  ,5/22 ,10/28 ,2693 ,522 ,1534 
+17 ,Macon  ,2020 ,Dryland  ,5/6 ,11/4 ,2788 ,873 ,971 
+18 ,Oconee  ,2020 ,Irrigated ,5/26 ,11/19 ,2374 ,704 ,1437 
+19 ,Pulaski  ,2020 ,Irrigated  ,5/19 ,11/4 ,2701 ,628 ,1300 
+20 ,Screven  ,2020 ,Irrigated  ,5/11 ,9/24 ,2808 ,571 ,1133 
+21 ,Sumter  ,2020 ,Irrigated  ,5/13 ,11/4 ,2748 ,1026 ,1279 
+22 ,Tattnall ,2020 ,Dryland ,- ,- ,- ,- ,432 
+23 ,Tift  ,2020 ,Dryland  ,5/11 ,10/27 ,2772 ,606 ,1289 
+24 ,Toombs  ,2020 ,Dryland  ,6/2 ,11/14 ,2667 ,623 ,750 
+25 ,Turner  ,2020 ,Dryland  ,6/2 ,12/4 ,2704 ,569 ,1300 
+26 ,Worth  ,2020 ,Irrigated  ,5/26 ,12/7 ,2819 ,770 ,1280 
+27 ,Ben Hill ,2021 ,Irrigated ,5/28 ,11/18 ,2748 ,- ,1343 
+28 ,Berrien ,2021 ,Dryland ,5/15 ,11/18 ,3069 ,851 ,1529 
+29 ,Bulloch ,2021 ,Irrigated ,5/19 ,11/18 ,2732 ,850 ,1324 
+30 ,Burke ,2021 ,Irrigated ,5/7 ,10/19 ,2653 ,624 ,1653 
+31 ,Burke ,2021 ,Dryland ,5/6 ,10/18 ,2663 ,501 ,1662 
+32 ,Colquitt ,2021 ,Irrigated ,5/17 ,10/27 ,2804 ,879 ,758 
+33 ,Cook ,2021 ,Dryland ,5/15 ,12/28 ,3410 ,949 ,602 
+34 ,Cook ,2021 ,Irrigated ,4/23 ,10/28 ,3000 ,900 ,1278 
+35 ,Evans ,2021 ,Dryland ,5/19 ,11/18 ,3044 ,736 ,1546 
+36 ,Grady ,2021 ,Dryland ,6/4 ,12/4 ,2874 ,780 ,1343 
+37 ,Jeff Davis ,2021 ,Irrigated ,6/2 ,11/27 ,2957 ,696 ,1302 
+38 ,Lowndes ,2021 ,Dryland ,5/27 ,12/2 ,3100 ,837 ,862 
+39 ,Macon ,2021 ,Dryland ,5/17 ,11/18 ,2894 ,954 ,1204 
+40 ,Miller ,2021 ,Irrigated ,5/10 ,11/23 ,3068 ,952 ,1372 
+41 ,Mitchell ,2021 ,Irrigated ,5/27 ,11/15 ,2986 ,873 ,1361 
+42 ,Oconee ,2021 ,Dryland ,5/18 ,11/3 ,2371 ,530 ,1652 
+43 ,Pulaski ,2021 ,Irrigated ,5/24 ,11/9 ,2943 ,587 ,1430 
+44 ,Screven ,2021 ,Irrigated ,5/17 ,10/27 ,- ,- ,1715 
+45 ,Seminole ,2021 ,Irrigated ,5/27 ,11/23 ,2969 ,762 ,1462 
+46 ,Sumter ,2021 ,Irrigated ,6/17 ,12/20 ,2518 ,505 ,1328 
+47 ,Tattnall ,2021 ,Dryland ,5/18 ,10/10 ,2589 ,604 ,1557 
+48 ,Toombs ,2021 ,Dryland ,5/22 ,11/12 ,3048 ,533 ,898 
+49 ,Turner ,2021 ,Dryland ,5/25 ,12/2 ,3148 ,539 ,1168 
+50 ,Wilcox ,2021 ,Dryland ,6/4 ,12/23 ,2881 ,614 ,1624 
+51 ,Worth ,2021 ,Irrigated ,5/18 ,11/10 ,3073 ,820 ,1419 
+52 ,Bulloch ,2022 ,Irrigated ,5/17 ,11/8 ,2879 ,453 ,1583 
+53 ,Burke ,2022 ,Dryland ,5/5 ,9/28 ,2604 ,498 ,1566 
+54 ,Burke ,2022 ,Irrigated ,5/11 ,10/25 ,2760 ,624 ,1645 
+55 ,Colquitt ,2022 ,Irrigated ,5/4 ,11/9 ,3269 ,548 ,1671 
+56 ,Cook ,2022 ,Irrigated ,5/10 ,10/24 ,- ,- ,1277 
+57 ,Dooly ,2022 ,Irrigated ,5/11 ,11/18 ,- ,- ,1605 
+58 ,Jeff Davis ,2022 ,Irrigated ,5/18 ,10/27 ,2804 ,583 ,1393 
+59 ,Jenkins ,2022 ,Irrigated ,5/20 ,11/3 ,2753 ,632 ,1961 
+60 ,Lowndes ,2022 ,Dryland ,5/3 ,10/13 ,3085 ,596 ,1245 
+61 ,Macon ,2022 ,Dryland ,6/2 ,11/20 ,2516 ,439 ,1037 
+62 ,Miller ,2022 ,Irrigated ,6/3 ,12/7 ,3266 ,- ,1370 
+63 ,Mitchell ,2022 ,Irrigated ,5/18 ,11/22 ,3180 ,703 ,1390 
+64 ,Oconee ,2022 ,Dryland ,6/2 ,11/14 ,2303 ,335 ,1166 
+65 ,Pulaski ,2022 ,Irrigated ,5/12 ,10/4 ,2744 ,736 ,1635 
+66 ,Seminole ,2022 ,Irrigated ,6/10 ,12/17 ,2696 ,497 ,1533 
+67 ,Sumter ,2022 ,Irrigated ,5/8 ,10/28 ,2728 ,731 ,1272 
+68 ,Tattnall ,2022 ,Dryland ,5/16 ,10/29 ,2993 ,909 ,1416 
+69 ,Telfair ,2022 ,Irrigated ,5/3 ,10/20 ,2945 ,488 ,1204 
+70 ,Tift ,2022 ,Dryland ,5/11 ,11/1 ,3392 ,- ,1020 
+71 ,Toombs ,2022 ,Irrigated ,5/9 ,9/22 ,2705 ,691 ,1244 
+72 ,Wilcox ,2022 ,Dryland ,6/10 ,1/3 ,2673 ,363 ,893 
+73 ,Worth ,2022 ,Irrigated ,5/24 ,11/2 ,2753 ,461 ,1441 
+74,Mitchell,2023,Dryland,3-May,20-Nov,,,779
+75,Atkinson,2023,Dryland,8-May,9-Nov,,,796
+76,Irwin,2023,Dryland,19-May,30-Nov,,,908
+77,Colquitt,2023,Dryland,15-May,14-Nov,,,1004
+78,Telfair,2023,Dfyland,17-May,29-Nov,,,1031
+79,Grady,2023,Dryland,5-Jun,8-Dec,,,1061
+80,Turner,2023,Dryland,27-May,30-Nov,,,1096
+81,Tattnall,2023,Dryland,16-May,30-Nov,,,1158
+82,Burke,2023,Dryland,10-May,30-Nov,,,1177
+83,Sumter,2023,Irrigated,12-May,2-Nov,,,1187
+84,Macon,2023,Irrigated,1-Jun,14-Nov,,,1194
+85,Seminole,2023,Irrigated,8-Jun,7-Dec,,,1200
+86,Dooly,2023,Irrigated,5-May,2-Nov,,,1219
+87,Worth,2023,Irrigated,18-May,1-Nov,,,1283
+88,Coffee,2023,Irrigated,8-May,25-Oct,,,1356
+89,Effingham,2023,Irrigated,16-May,10-Nov,,,1359
+90,Toombs,2023,Irrigated,8-May,19-Oct,,,1362
+91,Burke,2023,Irrigated,5-Jun,30-Nov,,,1371
+92,Miller,2023,Irrigated,30-May,20-Nov,,,1436
+93,Cook,2023,Irrigated,25-Apr,10-Oct,,,1436
+94,Mitchell,2023,Irrigated,4-May,24-Oct,,,1496
+95,Pulaski,2023,Irrigated,26-May,14-Nov,,,1548
+96,Colquitt,2023,Irrigated,30-May,20-Nov,,,1591
+97,Oconee,2023,Dryland,17-May,9-Nov,,,1886
+98,Colquitt,2024,Dryland,31-May,12-Nov,,,779
+99,Jeff Davis,2024,Irrigated,29-May,5-Dec,,,811
+100,Mitchell,2024,Dryland,3-May,12-Nov,,,912
+101,Mitchell,2024,Irrigated,3-Jun,2-Dec,,,995
+102,Oconee,2024,Dryland,22-May,5-Nov,,,1163
+103,Dooly,2024,Irrigated,2-May,5-Nov,,,1165
+104,Sumter,2024,Irrigated,5-Jun,25-Nov,,,1218
+105,Grady,2024,Dryland,22-May,31-Oct,,,1237
+106,Burke,2024,Irrigated,31-May,31-Oct,,,1244
+107,Cook,2024,Irrigated,30-Apr,12-Nov,,,1252
+108,Burke,2024,Dryland,23-May,1-Nov,,,1258
+109,Colquitt,2024,Irrigated,7-Jun,18-Nov,,,1288
+110,Tattnall,2024,Dryland,21-May,16-Nov,,,1310
+111,Jenkins,2024,Irrigated,26-May,23-Nov,,,1354
+112,Worth,2024,Irrigated,28-May,28-Oct,,,1426
+113,Turner,2024,Irrigated,7-Jun,3-Dec,,,1520
+114,Brooks,2024,Irrigated,31-May,23-Nov,,,1527
+115,Houston,2024,Irrigated,23-May,5-Nov,,,1557
+116,Pulaski,2024,Irrigated,30-May,6-Dec,,,1671
