@@ -17,8 +17,8 @@ library(leaflet)        # Interactive maps (primary mapping package)
 library(tidyverse)      # Data manipulation and visualization
 library(sf)             # Spatial data handling
 library(plotly)         # Interactive plots
-library(tune)           # NOTE: This appears unused - consider removing
-library(geomtextpath)   # NOTE: This appears unused - consider removing
+#library(tune)           # NOTE: This appears unused - consider removing
+#library(geomtextpath)   # NOTE: This appears unused - consider removing
 library(bslib)          # Bootstrap 5 themes (primary theming package)
 library(readr)          # CSV reading
 
@@ -33,9 +33,9 @@ data <- read_csv("data/varietytrials_w_2023_24.csv") %>%
                            levels = c("lintyield_lbac", "lintyield_kgha", "gto", "mic", 
                                      "strength_gtex", "rd", "b", "length_in", "length_mm", 
                                      "uniformity", "Q_score"),
-                           labels = c("LY (lbs/ac)", "LY (kg/ha)","GTO (%)", "Mic", 
+                           labels = c("Lint yield (lbs/ac)", "Lint yield (kg/ha)","GTO (%)", "Mic", 
                                      "Str (g/tex)", "Rd", "+b", "UHML (in)", "UHML (mm)", 
-                                     "UI (%)", "Q_Score"))) %>% 
+                                     "UI (%)", "Q Score"))) %>% 
   # Sort by county for consistent ordering
   arrange(county)
 
@@ -68,7 +68,7 @@ variety_colors <- c(
 # UI Definition
 # ==============================================================================
 ui <- page_fillable(
-  title = "UGA Cotton Dashboard",
+  title = "UGA Cotton Variety Selector",
   # Bootstrap 5 theme with custom primary color
   theme = bs_theme(version = 5, bootswatch = "flatly", primary = "#2C3E50"), 
   
@@ -131,7 +131,7 @@ ui <- page_fillable(
           # UGA Logo with error fallback
           img(src = "logo_uga.png", class = "logo-img", alt = "UGA Logo",
               onerror = "this.src='https://placehold.co/150x35/CCCCCC/333333?text=UGA+Logo+Error&font=inter'"),
-          h1("University of Georgia Cotton Dashboard", class = "lab-title")
+          h1("University of Georgia Cotton Variety Selector", class = "lab-title")
       ),
       # Lab Logo with error fallback
       img(src = "logo.png", class = "logo-img", alt = "Bastos Lab Logo",
@@ -145,30 +145,32 @@ ui <- page_fillable(
     # HOME/PRESENTATION Panel
     # ==========================================================================
     nav_panel(
-      title = "Page presentation",
+      title = "Welcome Page",
       icon = icon("house"),
       layout_columns(
         col_widths = c(6, 6),
         # Welcome Information Card
         card(
           height = "600px",
-          card_header("Welcome to UGA Cotton Selector", class = "bg-primary text-white"),
+          card_header("Welcome to the UGA Cotton Variety Selector", class = "bg-primary text-white"),
           card_body(
-            h3("Did you know that seed is the most expensive input for cotton farmers?"),
-            p("The selection of the proper cotton variety is one of the most critical decisions and this tool will help farmers and consultants make that decision."),
+            h3("Seed is the most expensive input for cotton growers."),
+            p("Selecting a cotton variety is one of the most critical decisions a grower has to make."),
+            p("This tool was developed to help growers and consultants make that decision based on data collected in their counties."),
+            p("The data used behind this tool includes a total of xxx trials conducted across 5 years and 35 Georgia counties, with a total of xxx commercial varieties evaluated"),
             h4("Available Tools:", class = "mt-4"),
             # List of application features
             tags$ul(class = "list-group list-group-flush",
-                    tags$li(class = "list-group-item", tags$strong("Variety Selector: "), "Get variety recommendations based on trial data."),
-                    tags$li(class = "list-group-item", tags$strong("Trait Comparison: "), "Compare yields across different environments."),
-                    tags$li(class = "list-group-item", tags$strong("State-level performance: "), "View county-specific trial and variety data."),
-                    tags$li(class = "list-group-item", tags$strong("Environmental Characterization: "), "Compare yields across different environments."),
-                    tags$li(class = "list-group-item", tags$strong("Experiment/Database: "), "Access detailed information about all experiments."))
+                    tags$li(class = "list-group-item", tags$strong("Variety Selector: "), "Get variety recommendations based on your county and production system."),
+                    tags$li(class = "list-group-item", tags$strong("Trait Comparison: "), "Compare the top-yielding varieties for your environment across different fiber quality traits."),
+                    tags$li(class = "list-group-item", tags$strong("State-level performance: "), "Explore how a given variety performed across all trials in the state."),
+                    tags$li(class = "list-group-item", tags$strong("Environment Ranking: "), "Learn how your county and production system ranked compared to all trials."),
+                    tags$li(class = "list-group-item", tags$strong("List of Trials: "), "Access detailed information about each trial"))
           )
         ),
         # Interactive Map Card
         card(height = "600px",
-             card_header("List of counties and years with experiment across Georgia", class = "bg-primary text-white"), 
+             card_header("List of counties and years with trials across Georgia", class = "bg-primary text-white"), 
              leafletOutput("map", height = "550px")
         )
       )
@@ -241,12 +243,12 @@ ui <- page_fillable(
       icon = icon("chart-line"),
       layout_sidebar(
         sidebar = sidebar(
-          tags$p("Select County and irrigation in the previous section (Variety selector)",
+          tags$p("Select County and Irrigation in the previous tab (Variety selector)",
                  class = "text-muted mb-3")
         ),
         # Parallel coordinates plot for top 5 varieties
         card(
-          card_header("Top 5 Varieties Parallel Plot"),
+          card_header("Top 5 Yielding Varieties Compared Across Fiber Quality Traits"),
           plotlyOutput("parallel_plot")
         )
       )
@@ -301,7 +303,7 @@ ui <- page_fillable(
     # ENVIRONMENTAL CHARACTERIZATION Panel
     # ==========================================================================
     nav_panel(
-      title = "Environmental Characterization", 
+      title = "Environment Ranking", 
       icon = icon("gauge-simple"),
       layout_sidebar(
         sidebar = sidebar(
@@ -310,7 +312,7 @@ ui <- page_fillable(
           selectInput("county", "Select County:", choices = unique(data$county))
         ),
         # Environmental comparison visualization
-        card(card_header("Results in different counties in 3 years"), 
+        card(card_header("Results in different counties across 5 years"), 
              layout_column_wrap(width = "100%", heights_equal = "row", 
                                 style = css(grid_template_columns = "repeat(auto-fit, minmax(300px, 1fr))"), 
                                 plotlyOutput("plot1_2", height = "2000px") # Large height for many trials
@@ -322,10 +324,10 @@ ui <- page_fillable(
     # EXPERIMENTS DATABASE Panel
     # ==========================================================================
    nav_panel(
-      title = "List of Experiments", 
+      title = "List of Trials", 
       icon = icon("calendar-days"),
       card(
-        card_header("List and main condition of experiments"), 
+        card_header("List and main condition of trials"), 
         DTOutput("table_supp") # Interactive data table
       )
     ),
@@ -336,43 +338,42 @@ ui <- page_fillable(
       title = "About", 
       icon = icon("info-circle"),
       card(
-        card_header("About cotton dashboard from Bastos Lab at the University of Georgia, USA "),
+        card_header("About the University of Georgia Cotton Variety Selector"),
         card_body(
           h3("About the project", class = "mb-4"), 
-          p("In this dashboard, we analyze cotton variety performance specifically for the state of Georgia. The analysis provides rankings based on trial data, enabling us to assess the performance of each variety across Georgia's diverse agricultural conditions."),
+          p("In this dashboard, we analyzed cotton variety performance specifically for the state of Georgia. The analysis provides rankings based on trial data, enabling us to assess the performance of each variety across Georgia's diverse agricultural conditions."),
           p("You can find further information visiting the following page: ", 
             tags$a(href="https://www.sciencedirect.com/science/article/pii/S0378429025000875", 
                    "Cotton lint yield and quality variability in Georgia, USA: Understanding genotypic and environmental interactions", 
                    target = "_blank")), 
           
           # Development team information
-          h4("App Development", class = "mt-4"), 
-          p("Dr. Gonzalo Scarpin"), 
-          p("Dr. Leonardo Bastos"),
+          h4("Dasboard Development", class = "mt-4"), 
+          p("Dr. Gonzalo Scarpin, Post-Doctoral Scientist at UGA"), 
+          p("Dr. Leonardo Bastos, Assistant Professor of Integrative Precision Agriculture, UGA"),
           
           h4("On-Farm Cotton Variety Evaluation Program", class = "mt-4"), 
           p("Program Coordinator:"), 
-          p("Dr. Camp Hand"),
+          p("Dr. Camp Hand, Assistant Professor and Cotton Extension Specialist, UGA"),
           
           # Acknowledgments
           h4("County Extension Agents", class = "mt-4"), 
-          p("We would like to thank all UGA county extension agents that lead each one of the trials"),
+          p("We thank all UGA county extension agents that lead each one of the trials"),
           
           h4("Participating Growers", class = "mt-4"), 
-          p("We extend our sincere gratitude to all growers for being part of several test across the state"),
+          p("We extend our sincere gratitude to all growers for being part of several trials across the state"),
           
           # Funding information
           h4("Funding and Support", class = "mt-4"), 
           p("This project was supported by:"), 
           tags$ul(
             tags$li("Georgia Cotton Commission"), 
-            tags$li("University of Georgia Extension")
+            tags$li("University of Georgia Cooperative Extension Service")
           ),
           
           # Contact information
           h4("Contact Information", class = "mt-4"), 
-          p("For questions about this dashboard please do not hesitate to contact"), 
-          p("Dr. Gonzalo Scarpin"), 
+          p("For questions about this dashboard please do not hesitate to contact Dr. Gonzalo Scarpin:"), 
           p(HTML(paste("Email:", tags$a(href="mailto:gjscarpin@uga.edu", "gjscarpin@uga.edu"))))
         )
       )
@@ -474,9 +475,9 @@ server <- function(input, output, session) {
       mutate(
         # Create popup text for map interactions
         popup_text = sprintf(
-          "<div style='min-width: 150px; font-family: Inter, sans-serif;'><b>County:</b> %s<br><b>Number of Experiments:</b> %s</div>",
+          "<div style='min-width: 150px; font-family: Inter, sans-serif;'><b>County:</b> %s<br><b>Number of Trials:</b> %s</div>",
           name,
-          ifelse(is.na(nyear), "No experiments", nyear)
+          ifelse(is.na(nyear), "No trials", nyear)
         )
       )
     
@@ -495,12 +496,12 @@ server <- function(input, output, session) {
       counties_w_sf, 
       zcol = "nyear", 
       popup = lapply(sprintf( 
-        "<div style='min-width: 150px; font-family: Inter, sans-serif;'><b>County:</b> %s<br><b>Number of Experiments:</b> %d</div>",
+        "<div style='min-width: 150px; font-family: Inter, sans-serif;'><b>County:</b> %s<br><b>Number of Trials:</b> %d</div>",
         counties_w_sf$name, 
         counties_w_sf$nyear
       ), htmltools::HTML),
       label = counties_w_sf$name,
-      layer.name = "Number of experiments"
+      layer.name = "Number of trials"
     )
     
     # Combine layers and return map
@@ -598,7 +599,7 @@ server <- function(input, output, session) {
     # Double-check if ranking data exists after calculations
     if(nrow(ranking_df) == 0) {
       no_data_message <- paste0(
-        "<b>No Ranking Data Found</b><br>",
+        "<b>No ranking data found</b><br>",
         "For: ", htmltools::htmlEscape(input$county_3), ", ",
         htmltools::htmlEscape(input$irrigation_3), ", ",
         htmltools::htmlEscape(input$variable_3), "<br>",
@@ -627,7 +628,7 @@ server <- function(input, output, session) {
     
     # Format labels based on variable type
     label_format_relative <- function(x) paste0(round(x, 1), "%")
-    label_format_absolute <- if(input$variable_3 == "LY (lbs/ac)") {
+    label_format_absolute <- if(input$variable_3 == "Lint yield (lbs/ac)") {
       function(x) round(x, 0)
     } else {
       function(x) round(x, 2)
@@ -767,7 +768,7 @@ server <- function(input, output, session) {
       filter(
         county == input$county_3,
         irrigation == input$irrigation_3,
-        resp_var == "LY (lbs/ac)"
+        resp_var == "Lint yield (lbs/ac)"
       )
     
     ranking_df <- filtered_data %>%
@@ -793,7 +794,7 @@ server <- function(input, output, session) {
   computed_fitted_values <- reactive({
     req(length(top_ly_varieties()) > 0, input$county_3, input$irrigation_3) 
     
-    traits_for_comparison <- c("LY (lbs/ac)", "GTO (%)", "UHML (mm)", "Str (g/tex)", "Mic", "UI (%)")
+    traits_for_comparison <- c("Lint yield (lbs/ac)", "GTO (%)", "UHML (mm)", "Str (g/tex)", "Mic", "UI (%)")
     top5_varieties <- top_ly_varieties()
     
     map_dfr(traits_for_comparison, function(current_trait) {
@@ -832,7 +833,7 @@ server <- function(input, output, session) {
                                 NA_real_, 
                                 (fitted_value / max_fitted) * 100),
         actual_value = fitted_value,
-        trait = factor(trait, levels =  c("LY (lbs/ac)", "GTO (%)", "UHML (mm)", "Str (g/tex)", "Mic", "UI (%)"))
+        trait = factor(trait, levels =  c("Lint yield (lbs/ac)", "GTO (%)", "UHML (mm)", "Str (g/tex)", "Mic", "UI (%)"))
       ) %>%
       select(variety, trait, actual_value, relative_value)
   })
@@ -843,11 +844,11 @@ server <- function(input, output, session) {
     df <- parallel_data_prep()
     if (nrow(df) == 0) {
       return(list(general_message = paste(
-        "<b>Insufficient Data for Trait Comparison</b><br><br>",
+        "<b>Insufficient data for trait comparison</b><br><br>",
         "Could not retrieve data for top varieties based on selections in 'Variety selector' tab:<br>",
         "<b>County:</b> ", htmltools::htmlEscape(input$county_3), "<br>",
         "<b>Irrigation:</b> ", htmltools::htmlEscape(input$irrigation_3), "<br><br>",
-        "<i>Please ensure selections yield data for Lint Yield (LY) to identify top varieties.</i>"
+        "<i>Please ensure selections yield data for Lint yield to identify top varieties.</i>"
       )))
     }
     
@@ -875,7 +876,7 @@ server <- function(input, output, session) {
       return(list(all_data_present = TRUE))
     } else { 
       return(list(general_message = paste(
-        "<b>Data Gaps in Trait Comparison</b><br><br>",
+        "<b>Data gaps in trait comparison</b><br><br>",
         "Some trait data might be unavailable for the selected top varieties from:<br>",
         "<b>County:</b> ", htmltools::htmlEscape(input$county_3), "<br>",
         "<b>Irrigation:</b> ", htmltools::htmlEscape(input$irrigation_3), "<br><br>",
@@ -911,11 +912,11 @@ server <- function(input, output, session) {
     p_data <- parallel_data_prep()
     if(nrow(p_data) == 0 || all(is.na(p_data$relative_value))) { 
       initial_selection_msg <- if (is.null(input$county_3) || input$county_3 == "" || is.null(input$irrigation_3) || input$irrigation_3 == "") {
-        paste( "<b>Trait Comparison Plot</b><br><br>",
+        paste( "<b>Trait comparison plot</b><br><br>",
                "Please make selections for County and Irrigation",
                "in the 'Variety selector' tab first." )
       } else {
-        "<b>No Data for Plot</b><br><i>Unexpected issue: parallel data is empty or all NA after selections.</i>"
+        "<b>No data for plot</b><br><i>Unexpected issue: parallel data is empty or all NA after selections.</i>"
       }
       return(
         plot_ly() %>% 
@@ -937,7 +938,7 @@ server <- function(input, output, session) {
       missing_lines <- sapply(names(info$specific_missing), function(var_name) {
         paste0("<b>", htmltools::htmlEscape(var_name), ":</b> No data for traits (", paste(sapply(info$specific_missing[[var_name]], htmltools::htmlEscape), collapse = ", "), ")")
       })
-      subtitle_html <- paste("<i>Data Notes (missing for some traits):</i><br>", paste(missing_lines, collapse = "<br>"))
+      subtitle_html <- paste("<i>Data notes (missing for some traits):</i><br>", paste(missing_lines, collapse = "<br>"))
     }
     
     p <- ggplot(
