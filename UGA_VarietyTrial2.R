@@ -17,8 +17,6 @@ library(leaflet)        # Interactive maps (primary mapping package)
 library(tidyverse)      # Data manipulation and visualization
 library(sf)             # Spatial data handling
 library(plotly)         # Interactive plots
-#library(tune)           # NOTE: This appears unused - consider removing
-#library(geomtextpath)   # NOTE: This appears unused - consider removing
 library(bslib)          # Bootstrap 5 themes (primary theming package)
 library(readr)          # CSV reading
 
@@ -177,23 +175,23 @@ ui <- page_fillable(
           height = "600px",
           card_header("Welcome to the UGA Cotton Variety Selector", class = "bg-primary text-white"),
           card_body(
-            h4("Seed is the most expensive input for cotton growers", style = "text-align: center;"),
             p("Selecting a cotton variety is one of the most critical decisions a grower has to make."),
             p("This tool was developed to help growers and consultants make that decision based on data collected in their counties."),
-            p("The data used behind this tool includes a total of", tags$b("117 trials"), "conducted across", tags$b("5 years (2020-2024)"), "and", tags$b("35 Georgia counties"), "with a total of", tags$b("25 commercial varieties"), "evaluated."),
-            h4("Available Tools:", class = "mt-4"),
+            p("The data used behind this tool includes a total of", tags$b("117 trials"), "conducted across", tags$b("5 years (2020-2024)"), "and", tags$b("35 Georgia counties"), "evaluating a total of", tags$b("25 commercial varieties")),
+            h4("Available Tools (as tabs on top menu):", class = "mt-4"),
             # List of application features
             tags$ul(class = "list-group list-group-flush",
-                    tags$li(class = "list-group-item", tags$strong("Variety Selector: "), "Get variety recommendations based on your county and production system."),
+                    tags$li(class = "list-group-item", tags$strong("Your County: "), "Get a summary of trials conducted in your county."),
+                    tags$li(class = "list-group-item", tags$strong("Variety Selector: "), "Get variety recommendations based on your county and irrigation status"),
                     tags$li(class = "list-group-item", tags$strong("Trait Comparison: "), "Compare the top-yielding varieties for your environment across different fiber quality traits."),
                     tags$li(class = "list-group-item", tags$strong("State-level Performance: "), "Explore how a given variety performed across all trials in the state."),
-                    tags$li(class = "list-group-item", tags$strong("Environment Ranking: "), "Learn how your county and production system ranked compared to all trials."),
+                    tags$li(class = "list-group-item", tags$strong("Environment Ranking: "), "Learn how your county and irrigation status ranked compared to all trials."),
                     tags$li(class = "list-group-item", tags$strong("List of Trials: "), "Access detailed information about each trial"))
           )
         ),
         # Interactive Map Card
         card(height = "600px",
-             card_header("List of counties and years with trials across Georgia", class = "bg-primary text-white"), 
+             card_header("Map of counties and years with trials across Georgia", class = "bg-primary text-white"), 
              leafletOutput("map", height = "550px")
         )
       )
@@ -215,11 +213,12 @@ ui <- page_fillable(
           selectInput("county_sel", 
                       "Select County:", 
                       choices = c("Please select a county" = "", unique(data$county)),
-                      selected = ""),
+                      selected = "") %>%
+            tagAppendAttributes(style = "background-color: #FFFF00;"),
         ),
         # Main content area with two cards
         layout_columns( 
-          col_widths = c(6, 6),
+          col_widths = c(4, 8),
           # County summary information
           card(
             height = "400px",
@@ -227,7 +226,7 @@ ui <- page_fillable(
             htmlOutput("county_summary")
           ),
           
-          # Variety Performance Rankings Card
+          # County map
           card(
             height = "350px",
             card_header("County Map"),
@@ -251,7 +250,7 @@ ui <- page_fillable(
         sidebar = sidebar(
           tags$p("On this tab, explore variety performance rankings for your county, irrigation status, and variable of interest.",
                  class = "text-muted mb-3"),
-          tags$p("Below, select the county, irrigation status, and variable of interest to view variety performance.",
+          tags$p("Below, select your irrigation status and variable of interest to view variety performance.",
                  class = "text-muted mb-2"),
           # County selection  
           selectInput("county_c1", 
@@ -265,11 +264,14 @@ ui <- page_fillable(
             label = "Select Irrigation:", 
             choices = c("Please select irrigation" = ""),
             selected = ""
-          ),
+          ) %>%
+            tagAppendAttributes(style = "background-color: #FFFF00;"),
           # Variable selection dropdown
           selectInput("variable_sel", 
                       "Select Variable:", 
-                      choices = unique(data$resp_var))
+                      choices = c("Please select variable" = "", unique(as.character(data$resp_var))),
+                      selected = "") %>%
+            tagAppendAttributes(style = "background-color: #FFFF00;"),
         ),
         # Main content area with two cards
         layout_columns( 
@@ -300,12 +302,13 @@ ui <- page_fillable(
                             "Select Year:", 
                             choices = NULL, # Updated dynamically based on other selections
                             selected = NULL,
-                            width = "200px")
+                            width = "200px") %>%
+                  tagAppendAttributes(style = "background-color: #FFFF00;")
               ),
               # Single trial plot output
               div(
                 style = "margin-top: 0px;",
-              plotlyOutput("single_trial_plot", height = "300px")
+                plotlyOutput("single_trial_plot", height = "300px")
               ),
             )
           )
@@ -320,7 +323,9 @@ ui <- page_fillable(
       icon = icon("chart-line"),
       layout_sidebar(
         sidebar = sidebar(
-          tags$p("Selected County (on Your County tab) and Irrigation (on Variety Selector tab)",
+          tags$p("On this tab, explore how the top 5 yielding varieties for your county and irrigation status compare across fiber quality traits.",
+                 class = "text-muted mb-3"),
+          tags$p("If you would like to change your County and Irrigation selections, go back to previous tabs (Your County and Variety Selector).",
                  class = "text-muted mb-3"),
           # County selection  
           selectInput("county_c2", 
@@ -328,14 +333,14 @@ ui <- page_fillable(
                       choices = c("Selected county" = ""),
                       selected = ""),
           tags$script(HTML("$('#county_c2').prop('disabled', true);")),
-        # Irrigation selection  
-        selectInput(
-          inputId = "irrigation_c1", 
-          label = "Selected Irrigation:", 
-          choices = c("Selected irrigation" = ""),
-          selected = ""
-        ),
-        tags$script(HTML("$('#irrigation_c1').prop('disabled', true);")),
+          # Irrigation selection  
+          selectInput(
+            inputId = "irrigation_c1", 
+            label = "Selected Irrigation:", 
+            choices = c("Selected irrigation" = ""),
+            selected = ""
+          ),
+          tags$script(HTML("$('#irrigation_c1').prop('disabled', true);")),
         ),
         # Parallel coordinates plot for top 5 varieties
         card(
@@ -353,26 +358,43 @@ ui <- page_fillable(
       layout_sidebar(
         # Control sidebar
         sidebar = sidebar(
-          tags$p("Select a county and variable to view trial counts, variety counts, and variety performance.", 
+          tags$p("On this tab, explore how a selected variety performed across all counties for a selected year and variable.",
                  class = "text-muted mb-3"),
+          tags$p("If you would like to change your Irrigation and Variable selections, go back to previous tab (Variety Selector).",
+                 class = "text-muted mb-3"),
+                 # Irrigation selection  
+          selectInput(
+            inputId = "irrigation_c2", 
+            label = "Selected Irrigation:", 
+            choices = c("Selected irrigation" = ""),
+            selected = ""
+          ),
+          tags$script(HTML("$('#irrigation_c2').prop('disabled', true);")),
+          
           selectInput("variable_c1", 
                       "Selected Variable:", 
                       choices = c("Selected variable" = ""),
                       selected = ""),
           tags$script(HTML("$('#variable_c1').prop('disabled', true);")),
           
-          selectInput("variety_sel", "Select Variety to Highlight:",
-                      choices = unique(data$variety)),
+          tags$p("Below, select your variety of choice and a specific year.",
+                 class = "text-muted mb-3"),
+          selectInput("variety_sel", 
+                      "Select Variety:",
+                      choices = c("Please select variety" = "", sort(unique(data$variety))),
+                      selected = "") %>%
+            tagAppendAttributes(style = "background-color: #FFFF00;"),
           
           selectInput("year_sel", 
                       "Select Year:", 
-                      choices = sort(unique(data$year)),
-                      selected = max(data$year, na.rm = TRUE)), # Default to most recent year
-
+                      choices = c("Please select year" = "", sort(unique(data$year))),
+                      selected = "") %>%
+            tagAppendAttributes(style = "background-color: #FFFF00;"),
+          
         ),
         # Main content with summary and map
         layout_columns( 
-          col_widths = c(4, 8),
+          #col_widths = c(8, 8),
           # Interactive map showing variety performance
           card(
             height = "600px",
@@ -381,7 +403,7 @@ ui <- page_fillable(
               tags$span(
                 class = "text-muted",
                 style = "font-size: 0.8rem; display: block;", 
-                "Performance of the selected variety across Georgia counties"
+                "Performance of the selected variety across Georgia counties in selected Year"
               )
             ),
             leafletOutput("map_2", height = "500px")
@@ -397,12 +419,23 @@ ui <- page_fillable(
       icon = icon("gauge-simple"),
       layout_sidebar(
         sidebar = sidebar(
-          tags$p("Select a variable and county...", class = "text-muted mb-3"), 
-          selectInput("variable", "Select Variable:", choices = unique(data$resp_var)),
-          selectInput("county", "Select County:", choices = unique(data$county))
+          tags$p("On this tab, explore how trials in your county ranked across all trials in the state for the selected variable.",
+                 class = "text-muted mb-3"),
+          tags$p("If you would like to change your Variable and County selections, go back to previous tabs (Your County and Variety Selector).",
+                 class = "text-muted mb-3"),
+                 selectInput("variable_c2", 
+                      "Selected Variable:", 
+                      choices = c("Selected variable" = ""),
+                      selected = ""),
+          tags$script(HTML("$('#variable_c2').prop('disabled', true);")),
+          selectInput("county_c3", 
+                      "Selected County:", 
+                      choices = c("Selected county" = ""),
+                      selected = ""),
+          tags$script(HTML("$('#county_c3').prop('disabled', true);")),
         ),
         # Environmental comparison visualization
-        card(card_header("Results in different counties across 5 years"), 
+        card(card_header("Results in different environments across 5 years"), 
              layout_column_wrap(width = "100%", heights_equal = "row", 
                                 style = css(grid_template_columns = "repeat(auto-fit, minmax(300px, 1fr))"), 
                                 plotlyOutput("plot1_2", height = "2000px") # Large height for many trials
@@ -491,6 +524,8 @@ server <- function(input, output, session) {
   observe({
     if (!is.null(input$variable_sel) && input$variable_sel != "") {
       updateSelectInput(session, "variable_c1", choices = c("Selected variable" = "", input$variable_sel), selected = input$variable_sel)
+      updateSelectInput(session, "variable_c2", choices = c("Selected variable" = "", input$variable_sel), selected = input$variable_sel)
+      
     }
   })
   
@@ -507,6 +542,12 @@ server <- function(input, output, session) {
   filtered_irrigation <- reactive({
     req(input$county_sel)
     sort(unique(data$irrigation[data$county == input$county_sel]))
+  })
+  
+  # Reactive expression: get year choices for selected variety
+  filtered_year <- reactive({
+    req(input$variety_sel)
+    sort(unique(data$year[data$variety == input$variety_sel]))
   })
   
   # Observer: update irrigation dropdown based on county
@@ -552,7 +593,7 @@ server <- function(input, output, session) {
       # Update choices and select most recent year by default
       updateSelectInput(session, "year_sel_trial", 
                         choices = available_years, 
-                        selected = available_years[1])
+                        selected = "")
     } else {
       updateSelectInput(session, "year_sel_trial", choices = NULL, selected = NULL)
     }
@@ -704,7 +745,8 @@ server <- function(input, output, session) {
   output$plot3_1 <- renderPlotly({
     # Check if required inputs are selected
     if (is.null(input$county_sel) || input$county_sel == "" || 
-        is.null(input$irrigation_sel) || input$irrigation_sel == "") {
+        is.null(input$irrigation_sel) || input$irrigation_sel == "" || 
+        is.null(input$variable_sel) || input$variable_sel == "") {
       # Return informational message for initial state
       return(
         plot_ly() %>%
@@ -713,7 +755,7 @@ server <- function(input, output, session) {
               list(
                 text = paste(
                   "<b>Variety Rankings</b><br>",
-                  "Select Irrigation<br>",
+                  "Select Irrigation and Variable<br>",
                   "to view rankings."
                 ),
                 x = 0.5, y = 0.5, xref = "paper", yref = "paper",
@@ -1205,14 +1247,14 @@ server <- function(input, output, session) {
   
   # Prepare county map data
   prepare_county_map_data <- reactive({
-    req(input$variable_5, input$irrigation_c1, input$variety_sel, input$year_sel)
-    if (input$variable_5 == "" || input$irrigation_c1 == "" || input$variety_sel == "" || input$year_sel == "") return(NULL)
+    req(input$variable_sel, input$irrigation_sel, input$variety_sel, input$year_sel)
+    if (input$variable_sel == "" || input$irrigation_sel == "" || input$variety_sel == "" || input$year_sel == "") return(NULL)
     
     raw_data <- data %>%
       filter(
         year == input$year_sel,
-        resp_var == input$variable_5,
-        irrigation == input$irrigation_c1
+        resp_var == input$variable_sel,
+        irrigation == input$irrigation_sel
       ) %>%
       group_by(county) %>%
       mutate(
@@ -1244,8 +1286,11 @@ server <- function(input, output, session) {
       mutate(
         
         class_highlight = factor(
-          ifelse(is.na(class_highlight), "No Data for Highlighted Variety", class_highlight),
-          levels = c("Top Tier (Top 33%)", "Mid Tier (Middle 33%)", "Bottom Tier (Bottom 33%)", "No Data for Highlighted Variety"),
+          ifelse(is.na(class_highlight), "No Data for Selected Variety", class_highlight),
+          levels = c("Top Tier (Top 33%)", 
+                     "Mid Tier (Middle 33%)", 
+                     "Bottom Tier (Bottom 33%)", 
+                     "No Data for Selected Variety"),
           ordered = TRUE
         ),
         popup_html = pmap_chr(list(name, resp_val_highlight, rank_highlight, total_varieties_highlight, class_highlight, top_variety_county, top_value_county), 
@@ -1274,7 +1319,10 @@ County: %s
     req(map_plot_data) 
     
     
-    performance_levels <- c("Top Tier (Top 33%)", "Mid Tier (Middle 33%)", "Bottom Tier (Bottom 33%)", "No Data for Highlighted Variety")
+    performance_levels <- c("Top Tier (Top 33%)", 
+                            "Mid Tier (Middle 33%)", 
+                            "Bottom Tier (Bottom 33%)", 
+                            "No Data for Selected Variety")
     
     
     performance_colors_fn <- colorFactor(
@@ -1306,21 +1354,16 @@ County: %s
         pal = performance_colors_fn,
         values = ~class_highlight,
         title = sprintf(
-          "%s Performance
+          "%s Performance<br>
 %s, %s, %s",
           htmltools::htmlEscape(input$variety_sel),
-          htmltools::htmlEscape(input$variable_5),
-          htmltools::htmlEscape(input$irrigation_c1),
+          htmltools::htmlEscape(input$variable_sel),
+          htmltools::htmlEscape(input$irrigation_sel),
           htmltools::htmlEscape(input$year_sel)
         ),
         opacity = 0.8,
         labFormat = labelFormat(prefix = "")
-      ) %>%
-      addLayersControl(
-        baseGroups = "Base Map",
-        overlayGroups = "Variety Performance",
-        options = layersControlOptions(collapsed = FALSE)
-      )
+      ) 
   })
   # Render county summary
   output$county_summary <- renderText({
@@ -1355,16 +1398,16 @@ County: %s
   
   # Plot Counties
   output$plot1_2 <- renderPlotly({
-    req(input$county, input$variable)
-    if (input$county == "" || input$variable == "") return(NULL)
+    req(input$county_sel, input$variable_sel)
+    if (input$county_sel == "" || input$variable_sel == "") return(NULL)
     
     selected_mean_val <- data %>% 
-      filter(county == input$county, resp_var == input$variable) %>% 
+      filter(county == input$county_sel, resp_var == input$variable_sel) %>% 
       summarise(mean_val = mean(resp_val, na.rm = TRUE)) %>% 
       pull(mean_val)
     
     plot_df_env <- data %>% 
-      filter(resp_var == input$variable, !is.na(resp_val)) %>% 
+      filter(resp_var == input$variable_sel, !is.na(resp_val)) %>% 
       group_by(trial, county, year) %>% 
       summarise(
         mean_resp_val = mean(resp_val, na.rm = TRUE), 
@@ -1373,7 +1416,7 @@ County: %s
       ) %>% 
       filter(!is.na(mean_resp_val), n_obs > 0) %>% 
       mutate(
-        is_selected_county = county == input$county, 
+        is_selected_county = county == input$county_sel, 
         alpha_val = if_else(is_selected_county, 1, 0.7), 
         color_val = if_else(is_selected_county, "#FF8C00", "#4682B4") 
       )
@@ -1389,7 +1432,7 @@ County: %s
         y = mean_resp_val, 
         text = paste(
           "<b>Trial:</b>", trial, 
-          sprintf("<br><b>Mean %s:</b> %.1f", input$variable, mean_resp_val),
+          sprintf("<br><b>Mean %s:</b> %.1f", input$variable_sel, mean_resp_val),
           "<br><b>County:</b>", county, 
           "<br><b>Year:</b>", year,
           "<br><b>Observations:</b>", n_obs
