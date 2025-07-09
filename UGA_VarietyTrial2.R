@@ -163,7 +163,7 @@ ui <- page_fillable(
   # ============================================================================
   navset_bar(
     
-    # HOME/PRESENTATION Panel
+    # Welcome Page Panel
     # ==========================================================================
     nav_panel(
       title = "Welcome Page",
@@ -233,7 +233,7 @@ ui <- page_fillable(
             layout_column_wrap( 
               width = "100%",
               #tags$div("Test", class = "mb-0 mt-0 text-muted"),
-              mapviewOutput("yourcounty_map", height = "300px")
+              leafletOutput("yourcounty_map", height = "300px")
             ) 
           ),
         )
@@ -250,7 +250,7 @@ ui <- page_fillable(
         sidebar = sidebar(
           tags$p("On this tab, explore variety performance rankings for your county, irrigation status, and variable of interest.",
                  class = "text-muted mb-3"),
-          tags$p("Below, select your irrigation status and variable of interest to view variety performance.",
+          tags$p("If you would like to change your County selection, go back to previous tab (Your County).",
                  class = "text-muted mb-2"),
           # County selection  
           selectInput("county_c1", 
@@ -258,6 +258,9 @@ ui <- page_fillable(
                       choices = c("Selected county" = ""),
                       selected = ""),
           tags$script(HTML("$('#county_c1').prop('disabled', true);")),
+          tags$p("Below, select your irrigation status and variable of interest to view variety performance.",
+                 class = "text-muted mb-2"),
+          
           # Irrigation selection dropdown
           selectInput(
             inputId = "irrigation_sel", 
@@ -326,7 +329,7 @@ ui <- page_fillable(
           tags$p("On this tab, explore how the top 5 yielding varieties for your county and irrigation status compare across fiber quality traits.",
                  class = "text-muted mb-3"),
           tags$p("If you would like to change your County and Irrigation selections, go back to previous tabs (Your County and Variety Selector).",
-                 class = "text-muted mb-3"),
+                 class = "text-muted mb-2"),
           # County selection  
           selectInput("county_c2", 
                       "Selected County:", 
@@ -361,7 +364,7 @@ ui <- page_fillable(
           tags$p("On this tab, explore how a selected variety performed across all counties for a selected year and variable.",
                  class = "text-muted mb-3"),
           tags$p("If you would like to change your Irrigation and Variable selections, go back to previous tab (Variety Selector).",
-                 class = "text-muted mb-3"),
+                 class = "text-muted mb-2"),
                  # Irrigation selection  
           selectInput(
             inputId = "irrigation_c2", 
@@ -378,7 +381,7 @@ ui <- page_fillable(
           tags$script(HTML("$('#variable_c1').prop('disabled', true);")),
           
           tags$p("Below, select your variety of choice and a specific year.",
-                 class = "text-muted mb-3"),
+                 class = "text-muted mb-2"),
           selectInput("variety_sel", 
                       "Select Variety:",
                       choices = c("Please select variety" = "", sort(unique(data$variety))),
@@ -422,7 +425,7 @@ ui <- page_fillable(
           tags$p("On this tab, explore how trials in your county ranked across all trials in the state for the selected variable.",
                  class = "text-muted mb-3"),
           tags$p("If you would like to change your Variable and County selections, go back to previous tabs (Your County and Variety Selector).",
-                 class = "text-muted mb-3"),
+                 class = "text-muted mb-2"),
                  selectInput("variable_c2", 
                       "Selected Variable:", 
                       choices = c("Selected variable" = ""),
@@ -521,11 +524,10 @@ server <- function(input, output, session) {
   })
   
   # Sync variable selection across panels
-  observe({
-    if (!is.null(input$variable_sel) && input$variable_sel != "") {
+  observeEvent(input$variable_sel, {
+    if (input$variable_sel != "") {
       updateSelectInput(session, "variable_c1", choices = c("Selected variable" = "", input$variable_sel), selected = input$variable_sel)
       updateSelectInput(session, "variable_c2", choices = c("Selected variable" = "", input$variable_sel), selected = input$variable_sel)
-      
     }
   })
   
@@ -656,88 +658,59 @@ server <- function(input, output, session) {
   
   # Your County Plot 
   # ============================================================================
-  # output$yourcounty_map <- renderMapview({
-  #   req(input$county_sel)
-  #   if (input$county_sel == "") return("<p>Please select a county.</p>")
-  # 
-  #       # Ensure counties_w is sf object
-  #   counties_w_sf <- if (!inherits(counties_w, "sf")) {
-  #     st_as_sf(counties_w)
-  #   } else {
-  #     counties_w
-  #   }
-  #   
-  #   if (is.null(input$county_sel) || input$county_sel == "" ) {
-  #     # Return informational message for initial state
-  #     return(
-  #       plot_ly() %>%
-  #         layout(
-  #           annotations = list(
-  #             list(
-  #               text = paste(
-  #                 "Select County<br>",
-  #                 "to view data"
-  #               ),
-  #               x = 0.5, y = 0.5, xref = "paper", yref = "paper",
-  #               showarrow = FALSE, align = "center",
-  #               font = list(size = 12, color = "#333333"),
-  #               bordercolor = "#2C3E50", borderwidth = 1, borderpad = 8,
-  #               bgcolor = "#f0f8ff", opacity = 0.9
-  #             )
-  #           ),
-  #           plot_bgcolor = "#f8f9fa", paper_bgcolor = "#f8f9fa",
-  #           xaxis = list(visible = FALSE, showgrid = FALSE, zeroline = FALSE),
-  #           yaxis = list(visible = FALSE, showgrid = FALSE, zeroline = FALSE),
-  #           margin = list(l=10, r=10, b=10, t=10, pad=4)
-  #         )
-  #     )
-  #   }
-  #   
-  #   
-  #   # Join county information with trial data
-  #   counties_info <- counties %>%
-  #     left_join(
-  #       counties_w_sf %>% 
-  #         st_drop_geometry() %>% 
-  #         select(name, nyear), 
-  #       by = "name"
-  #     ) %>%
-  #     mutate(
-  #       # Create popup text for map interactions
-  #       popup_text = sprintf(
-  #         "<div style='min-width: 150px; font-family: Inter, sans-serif;'><b>County:</b> %s<br><b>Number of Trials:</b> %s</div>",
-  #         name,
-  #         ifelse(is.na(nyear), "No trials", nyear)
-  #       )
-  #     )
-  #   
-  #   # Creating single county sf
-  #   counties_info_select <- counties_info #%>%
-  #     #filter(name == input$county_sel)
-  #   
-  #   # Create base map layer (all counties)
-  #   map1 <- mapview(
-  #     counties_info, 
-  #     alpha = 0.5, 
-  #     col.regions = "grey", 
-  #     popup = lapply(counties_info$popup_text, htmltools::HTML), 
-  #     label = counties_info$name,
-  #     legend = FALSE
-  #   )
-  #   
-  #   # Create overlay layer (counties with experiments)
-  #   map2 <- mapview(
-  #     counties_info_select, 
-  #     alpha = 0.5, 
-  #     col.regions = "red", 
-  #     popup = lapply(counties_info$popup_text, htmltools::HTML), 
-  #     label = counties_info$name,
-  #     legend = FALSE
-  #   )
-  #     
-  #   # Combine layers and return map
-  #   (map1 + map2)@map
-  # })
+  # Prepare your county map data
+  prepare_yourcounty_map_data <- reactive({
+    req(input$county_sel)
+    counties %>% 
+      rename(county = name) %>%
+      mutate(county = str_remove_all(county, " ")) %>%
+      filter(county == input$county_sel)
+  })
+  
+  # Your County map
+  output$yourcounty_map <- renderLeaflet({
+    #req(prepare_yourcounty_map_data())
+    
+    # Data
+    all_counties <- counties %>%
+      rename(county = name) %>%
+      mutate(county = str_remove_all(county, " "))
+    
+      # Make sure this is an sf object
+    selected_county <- prepare_yourcounty_map_data()
+    
+    # Get bounding box of selected county
+    centroid <- selected_county %>%
+      st_centroid() %>%
+      st_coordinates()
+
+    # Render map
+    map1 <- mapview(
+      all_counties, 
+      alpha = 0.5, 
+      col.regions = "grey", 
+      popup = NULL, 
+      layer.name = "GA counties",
+      legend = FALSE
+    )
+    
+    # Create overlay layer (counties with experiments)
+    map2 <- mapview(
+      selected_county, 
+      popup = NULL,
+      col.regions = "red",
+      alpha.regions = 0.5,
+      layer.name = "Your county"
+    )
+    
+    # Combine layers and return map
+    finalyourcountymap <- (map1 + map2)@map %>%
+      setView(centroid[[1]], 
+              centroid[[2]],
+              zoom = 7) 
+    
+    finalyourcountymap
+  })
   
   
   # Variety Rankings Plot (Relative Performance)
@@ -1365,6 +1338,7 @@ County: %s
         labFormat = labelFormat(prefix = "")
       ) 
   })
+  
   # Render county summary
   output$county_summary <- renderText({
     req(input$county_sel)
