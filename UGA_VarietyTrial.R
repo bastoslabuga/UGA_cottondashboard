@@ -1,5 +1,5 @@
 # ==============================================================================
-# UGA Cotton Selector Shiny Application
+# UGA Cotton Rx Shiny Application
 # ==============================================================================
 # This application provides an interactive tool for cotton variety selection
 # based on University of Georgia trial data across multiple counties and years.
@@ -66,7 +66,7 @@ variety_colors <- c(
 # UI Definition
 # ==============================================================================
 ui <- page_fillable(
-  title = "UGA Cotton Variety Selector",
+  title = "UGA Cotton Variety Rx",
   # Bootstrap 5 theme with custom primary color
   theme = bs_theme(version = 5, bootswatch = "flatly", primary = "#2C3E50"), 
   
@@ -152,7 +152,7 @@ ui <- page_fillable(
               onerror = "this.src='https://placehold.co/150x35/CCCCCC/333333?text=UGA+Logo+Error&font=inter'")
       ),
       div(class = "title-center",
-          h1("University of Georgia Cotton Variety Selector", class = "lab-title")
+          h1("University of Georgia Cotton Variety Rx", class = "lab-title")
       ),
       div(class = "logo-right",
           img(src = "logo.png", class = "logo-img", alt = "Bastos Lab Logo",
@@ -173,20 +173,20 @@ ui <- page_fillable(
         # Welcome Information Card
         card(
           height = "600px",
-          card_header("Welcome to the UGA Cotton Variety Selector", class = "bg-primary text-white"),
+          card_header("Welcome to the UGA Cotton Variety Rx", class = "bg-primary text-white"),
           card_body(
             p("Selecting a cotton variety is one of the most critical decisions a grower has to make."),
             p("This tool was developed to help growers and consultants make that decision based on data collected in their counties."),
-            p("The data used behind this tool includes a total of", tags$b("117 trials"), "conducted across", tags$b("5 years (2020-2024)"), "and", tags$b("35 Georgia counties"), "evaluating a total of", tags$b("25 commercial varieties")),
+            p("The data used behind this tool includes a total of", tags$b("117 trials"), "conducted across", tags$b("5 years (2020-2024)"), "and", tags$b("35 Georgia counties"), "evaluating a total of", tags$b("25 commercial varieties.")),
             h4("Available Tools (as tabs on top menu):", class = "mt-4"),
             # List of application features
             tags$ul(class = "list-group list-group-flush",
                     tags$li(class = "list-group-item", tags$strong("Your County: "), "Get a summary of trials conducted in your county."),
-                    tags$li(class = "list-group-item", tags$strong("Variety Selector: "), "Get variety recommendations based on your county and irrigation status"),
+                    tags$li(class = "list-group-item", tags$strong("Variety Rx: "), "Get variety recommendations based on your county and irrigation status."),
                     tags$li(class = "list-group-item", tags$strong("Trait Comparison: "), "Compare the top-yielding varieties for your environment across different fiber quality traits."),
                     tags$li(class = "list-group-item", tags$strong("State-level Performance: "), "Explore how a given variety performed across all trials in the state."),
                     tags$li(class = "list-group-item", tags$strong("Environment Ranking: "), "Learn how your county and irrigation status ranked compared to all trials."),
-                    tags$li(class = "list-group-item", tags$strong("List of Trials: "), "Access detailed information about each trial"))
+                    tags$li(class = "list-group-item", tags$strong("List of Trials: "), "Access detailed information about each trial."))
           )
         ),
         # Interactive Map Card
@@ -240,10 +240,10 @@ ui <- page_fillable(
       )
     ),    
     
-    # VARIETY SELECTOR Panel
+    # VARIETY Rx Panel
     # ==========================================================================
     nav_panel(
-      title = "Variety Selector",
+      title = "Variety Rx",
       icon = icon("cotton-bureau"),
       layout_sidebar(
         # Sidebar with input controls
@@ -328,7 +328,7 @@ ui <- page_fillable(
         sidebar = sidebar(
           tags$p("On this tab, explore how the top 5 yielding varieties for your county and irrigation status compare across fiber quality traits.",
                  class = "text-muted mb-3"),
-          tags$p("If you would like to change your County and Irrigation selections, go back to previous tabs (Your County and Variety Selector).",
+          tags$p("If you would like to change your County and Irrigation selections, go back to previous tabs (Your County and Variety Rx).",
                  class = "text-muted mb-2"),
           # County selection  
           selectInput("county_c2", 
@@ -363,7 +363,7 @@ ui <- page_fillable(
         sidebar = sidebar(
           tags$p("On this tab, explore how a selected variety performed across all counties for a selected year and variable.",
                  class = "text-muted mb-3"),
-          tags$p("If you would like to change your Irrigation and Variable selections, go back to previous tab (Variety Selector).",
+          tags$p("If you would like to change your Irrigation and Variable selections, go back to previous tab (Variety Rx).",
                  class = "text-muted mb-2"),
                  # Irrigation selection  
           selectInput(
@@ -424,7 +424,7 @@ ui <- page_fillable(
         sidebar = sidebar(
           tags$p("On this tab, explore how trials in your county ranked across all trials in the state for the selected variable.",
                  class = "text-muted mb-3"),
-          tags$p("If you would like to change your Variable and County selections, go back to previous tabs (Your County and Variety Selector).",
+          tags$p("If you would like to change your Variable and County selections, go back to previous tabs (Your County and Variety Rx).",
                  class = "text-muted mb-2"),
                  selectInput("variable_c2", 
                       "Selected Variable:", 
@@ -464,7 +464,7 @@ ui <- page_fillable(
       title = "About", 
       icon = icon("info-circle"),
       card(
-        card_header("About the University of Georgia Cotton Variety Selector"),
+        card_header("About the University of Georgia Cotton Variety Rx"),
         card_body(
           h3("About the project", class = "mb-4"), 
           p("In this dashboard, we analyzed cotton variety performance specifically for the state of Georgia. The analysis provides rankings based on trial data, enabling us to assess the performance of each variety across Georgia's diverse agricultural conditions."),
@@ -1051,7 +1051,7 @@ server <- function(input, output, session) {
     if (nrow(df) == 0) {
       return(list(general_message = paste(
         "<b>Insufficient data for trait comparison</b><br><br>",
-        "Could not retrieve data for top varieties based on selections in 'Variety selector' tab:<br>",
+        "Could not retrieve data for top varieties based on selections in 'Variety Rx' tab:<br>",
         "<b>County:</b> ", htmltools::htmlEscape(input$county_sel), "<br>",
         "<b>Irrigation:</b> ", htmltools::htmlEscape(input$irrigation_sel), "<br><br>",
         "<i>Please ensure selections yield data for Lint yield to identify top varieties.</i>"
@@ -1120,7 +1120,7 @@ server <- function(input, output, session) {
       initial_selection_msg <- if (is.null(input$county_sel) || input$county_sel == "" || is.null(input$irrigation_sel) || input$irrigation_sel == "") {
         paste( "<b>Trait comparison plot</b><br><br>",
                "Please make selections for County and Irrigation",
-               "in the 'Variety Selector' tab first." )
+               "in the 'Variety Rx' tab first." )
       } else {
         "<b>No data for plot</b><br><i>Unexpected issue: parallel data is empty or all NA after selections.</i>"
       }
