@@ -23,17 +23,17 @@ library(readr)          # CSV reading
 # Data Loading and Preprocessing
 # ==============================================================================
 # Load main cotton variety trial data
-data <- read_csv("data/varietytrials_w_2023_24.csv") %>% 
+data <- read_csv("data/varietytrials_w_2023_24_loan.csv") %>% 
   # Split site column into county and year components
   separate(col = site, into = c("county", "year"), sep = "_") %>% 
   # Create ordered factor for response variables with user-friendly labels
   mutate(resp_var = factor(resp_var,
                            levels = c("lintyield_lbac", "lintyield_kgha", "gto", "mic", 
                                       "strength_gtex", "rd", "b", "length_in", "length_mm", 
-                                      "uniformity", "Q_score"),
+                                      "uniformity", "Q_score", "loan_value"),
                            labels = c("Lint yield (lbs/ac)", "Lint yield (kg/ha)","GTO (%)", "Mic", 
                                       "Str (g/tex)", "Rd", "+b", "UHML (in)", "UHML (mm)", 
-                                      "UI (%)", "Q Score"))) %>% 
+                                      "UI (%)", "Q Score", "Loan value (cts/lb)"))) %>% 
   # Sort by county for consistent ordering
   arrange(county)
 
